@@ -16,7 +16,7 @@ export default function HomePage() {
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           <Link href="/login" className="btn-secondary" style={{ padding: '0.5rem 1rem' }}>Sign In</Link>
-          <Link href=" " className="btn-primary" style={{ padding: '0.5rem 1rem' }}>Get Started</Link>
+          <Link href="/register" className="btn-primary" style={{ padding: '0.5rem 1rem' }}>Get Started</Link>
         </div>
       </nav>
 
@@ -35,10 +35,10 @@ export default function HomePage() {
           real-time pricing in INR, and seamless quotation management.
         </p>
         <div className="animate-fade-in-up" style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap', animationDelay: '0.3s' }}>
-          <Link href=" " className="btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1rem' }}>
+          <Link href="/register" className="btn-primary" style={{ padding: '0.875rem 2rem', fontSize: '1rem' }}>
             Start Trading <ArrowRight size={18} />
           </Link>
-          <Link href=" " className="btn-secondary" style={{ padding: '0.875rem 2rem', fontSize: '1rem' }}>
+          <Link href="/login" className="btn-secondary" style={{ padding: '0.875rem 2rem', fontSize: '1rem' }}>
             Sign In to Dashboard
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function HomePage() {
                   </li>
                 ))}
               </ul>
-              <Link href=" " className="btn-primary" style={{ marginTop: '1.5rem', width: '100%', justifyContent: 'center', background: `linear-gradient(135deg, ${color}cc, ${color})` }}>
+              <Link href={`/register?role=${role.toLowerCase()}`} className="btn-primary" style={{ marginTop: '1.5rem', width: '100%', justifyContent: 'center', background: `linear-gradient(135deg, ${color}cc, ${color})` }}>
                 Join as {role} <ArrowRight size={16} />
               </Link>
             </div>
