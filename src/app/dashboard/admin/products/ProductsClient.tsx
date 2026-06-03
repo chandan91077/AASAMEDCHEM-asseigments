@@ -5,7 +5,7 @@ import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, X, Loader2, Package } fr
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import type { Product } from '@/lib/types'
-import { UNIT_SHORT, inrToPaise, paiseToInr, COMPATIBLE_UNITS, type BaseUnit } from '@/lib/units'
+import { UNIT_SHORT, inrToPaise, paiseToInr, COMPATIBLE_UNITS, formatINR, type BaseUnit } from '@/lib/units'
 
 const CATEGORIES = ['Acids', 'Bases', 'Inorganic Salts', 'Organic Compounds', 'Solvents', 'Sugars', 'Oxidizers', 'Kits', 'Other']
 const BASE_UNITS: BaseUnit[] = ['g', 'mL', 'unit']
@@ -117,7 +117,7 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
                 <td style={{ color: '#8899bb', fontFamily: 'monospace', fontSize: '0.8rem' }}>{p.sku || '—'}</td>
                 <td style={{ color: '#8899bb' }}>{p.category || '—'}</td>
                 <td><span style={{ padding: '2px 8px', background: 'rgba(14,144,226,0.1)', borderRadius: 4, color: '#38aaf6', fontSize: '0.8rem', fontWeight: 600 }}>{p.base_unit}</span></td>
-                <td style={{ color: '#34d399', fontWeight: 600 }}>₹{paiseToInr(p.base_price_paise).toFixed(4)}/{p.base_unit}</td>
+                <td style={{ color: '#34d399', fontWeight: 600 }}>{formatINR(p.base_price_paise)}/{p.base_unit}</td>
                 <td style={{ color: '#e8edf8' }}>{Number(p.stock_quantity).toLocaleString('en-IN')} {p.base_unit}</td>
                 <td>
                   <button onClick={() => toggleActive(p)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: p.is_active ? '#34d399' : '#8899bb' }}>

@@ -10,6 +10,14 @@ import {
   type DisplayUnit, type BaseUnit,
 } from '@/lib/units'
 
+function getAvatarColor(key: string) {
+  // deterministic pastel palette from id/name
+  let hash = 0
+  for (let i = 0; i < key.length; i++) hash = (hash << 5) - hash + key.charCodeAt(i)
+  const hue = Math.abs(hash) % 360
+  return `linear-gradient(135deg, hsl(${hue}, 60%, 45%), hsl(${(hue + 40) % 360}, 60%, 45%))`
+}
+
 const CATEGORIES = ['All', 'Acids', 'Bases', 'Inorganic Salts', 'Organic Compounds', 'Solvents', 'Sugars', 'Oxidizers', 'Kits', 'Other']
 
 interface Props {
@@ -182,8 +190,8 @@ export default function CatalogClient({ products, userId, userRole }: Props) {
 
               {/* Product header */}
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', marginBottom: '0.875rem' }}>
-                <div style={{ width: 42, height: 42, background: 'linear-gradient(135deg, rgba(14,144,226,0.2), rgba(52,211,153,0.1))', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <FlaskConical size={20} color="#38aaf6" />
+                <div className="product-avatar" style={{ background: getAvatarColor(product.id) }}>
+                  {product.name ? product.name.trim().charAt(0).toUpperCase() : <FlaskConical size={18} color="#e8edf8" />}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#e8edf8', lineHeight: 1.3, marginBottom: '0.2rem' }}>{product.name}</h3>
@@ -205,7 +213,7 @@ export default function CatalogClient({ products, userId, userRole }: Props) {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.875rem', padding: '0.625rem 0.875rem', background: 'rgba(14,144,226,0.05)', borderRadius: '0.5rem', border: '1px solid rgba(14,144,226,0.1)' }}>
                 <div>
                   <div style={{ fontSize: '0.7rem', color: '#8899bb', fontWeight: 600, textTransform: 'uppercase' }}>Base Price</div>
-                  <div style={{ fontSize: '1rem', fontWeight: 700, color: '#38aaf6' }}>₹{(product.base_price_paise / 100).toFixed(4)}<span style={{ fontSize: '0.75rem', color: '#8899bb' }}>/{product.base_unit}</span></div>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, color: '#38aaf6' }}>{formatINR(product.base_price_paise)}<span style={{ fontSize: '0.75rem', color: '#8899bb' }}>/{product.base_unit}</span></div>
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: '0.7rem', color: '#8899bb', fontWeight: 600, textTransform: 'uppercase' }}>Stock</div>
@@ -243,11 +251,11 @@ export default function CatalogClient({ products, userId, userRole }: Props) {
 
               {/* Price preview */}
               <div style={{ fontSize: '0.8rem', color: '#8899bb', marginBottom: '0.875rem' }}>
-                Estimated: <span style={{ color: '#34d399', fontWeight: 700 }}>{getPricePreview(product)}</span>
+                Est.: <span style={{ color: '#34d399', fontWeight: 700 }}>{getPricePreview(product)}</span>
               </div>
 
               <button
-                className={inCart ? 'btn-success' : 'btn-primary'}
+                className={inCart ? 'btn-success' : 'btn-cta-human'}
                 style={{ width: '100%', justifyContent: 'center' }}
                 onClick={() => addToCart(product)}
               >
@@ -300,7 +308,7 @@ export default function CatalogClient({ products, userId, userRole }: Props) {
                     </button>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '0.75rem', color: '#8899bb' }}>₹{(item.product.base_price_paise / 100).toFixed(4)}/{item.product.base_unit}</span>
+                    <span style={{ fontSize: '0.75rem', color: '#8899bb' }}>{formatINR(item.product.base_price_paise)}/{item.product.base_unit}</span>
                     <span style={{ fontWeight: 700, color: '#34d399' }}>{formatINR(item.lineTotalPaise)}</span>
                   </div>
                 </div>

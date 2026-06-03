@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Plus, Edit2, Trash2, FlaskConical, X, Loader2, PackageCheck, ToggleLeft, ToggleRight } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
-import { inrToPaise, paiseToInr, UNIT_LABELS } from '@/lib/units'
+import { inrToPaise, paiseToInr, UNIT_LABELS, formatINR } from '@/lib/units'
 
 const CATEGORIES = ['Acids', 'Bases', 'Inorganic Salts', 'Organic Compounds', 'Solvents', 'Sugars', 'Oxidizers', 'Kits', 'Other']
 const BASE_UNITS = [
@@ -191,7 +191,7 @@ export default function SellerProductsClient({ products: initial, sellerId }: { 
               <div style={{ padding: '0.625rem 0.875rem', background: 'rgba(14,144,226,0.07)', borderRadius: '0.5rem' }}>
                 <div style={{ fontSize: '0.7rem', color: '#8899bb', marginBottom: '0.25rem', textTransform: 'uppercase', fontWeight: 600 }}>Price</div>
                 <div style={{ fontWeight: 700, color: '#38aaf6', fontSize: '0.95rem' }}>
-                  ₹{paiseToInr(product.base_price_paise).toFixed(4)}/{product.base_unit}
+                  {formatINR(product.base_price_paise)}/{product.base_unit}
                 </div>
               </div>
               <div style={{ padding: '0.625rem 0.875rem', background: 'rgba(52,211,153,0.07)', borderRadius: '0.5rem' }}>

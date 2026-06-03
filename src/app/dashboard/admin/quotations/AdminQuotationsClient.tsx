@@ -142,7 +142,7 @@ export default function AdminQuotationsClient({ initialQuotations }: { initialQu
                               <td style={{ color: '#e8edf8', fontWeight: 500 }}>{prod?.name || item.product_id.slice(0, 8)}</td>
                               <td style={{ color: '#38aaf6' }}>{Number(item.display_qty).toLocaleString('en-IN')} {item.display_unit}</td>
                               <td style={{ color: '#8899bb', fontFamily: 'monospace', fontSize: '0.8rem' }}>{Number(item.ordered_qty_base).toLocaleString('en-IN')} {prod?.base_unit}</td>
-                              <td style={{ color: '#8899bb' }}>₹{(item.unit_price_paise / 100).toFixed(4)}/{prod?.base_unit}</td>
+                              <td style={{ color: '#8899bb' }}>{formatINR(item.unit_price_paise)}/{prod?.base_unit}</td>
                               <td style={{ color: '#34d399', fontWeight: 700 }}>{formatINR(item.line_total_paise)}</td>
                             </tr>
                           )

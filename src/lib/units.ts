@@ -55,11 +55,6 @@ export function fromBaseUnit(baseQty: number, displayUnit: DisplayUnit): number 
   return baseQty / CONVERSION_FACTORS[displayUnit]
 }
 
-/**
- * Calculate line total in paise
- * basePricePaise = price per base unit in paise
- * orderedQtyBase = quantity in base units
- */
 export function calculateLineTotalPaise(
   basePricePaise: number,
   orderedQtyBase: number
