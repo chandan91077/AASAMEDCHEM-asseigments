@@ -71,6 +71,20 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
     setProducts(ps => ps.map(x => x.id === p.id ? data : x))
   }
 
+  async function assignToSeller(p: Product) {
+    const email = window.prompt('Enter seller email to assign this product to:')
+    if (!email) return
+    const supabase = createClient()
+    const { data: profile, error: pe } = await supabase.from('profiles').select('id,email,role').eq('email', email).limit(1).maybeSingle()
+    if (pe) { toast.error(pe.message); return }
+    if (!profile || profile.role !== 'seller') { toast.error('Seller not found with that email'); return }
+
+    const { data, error } = await supabase.from('products').update({ seller_id: profile.id }).eq('id', p.id).select().single()
+    if (error) { toast.error(error.message); return }
+    setProducts(ps => ps.map(x => x.id === p.id ? data : x))
+    toast.success(`Assigned to seller ${profile.email}`)
+  }
+
   const filtered = products.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     (p.sku || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -129,6 +143,9 @@ export default function ProductsClient({ initialProducts }: { initialProducts: P
                     <button className="btn-secondary" style={{ padding: '0.4rem 0.6rem' }} onClick={() => openEdit(p)}>
                       <Pencil size={14} />
                     </button>
+                      <button className="btn-secondary" style={{ padding: '0.4rem 0.6rem' }} onClick={() => assignToSeller(p)}>
+                        Assign
+                      </button>
                     <button className="btn-danger" style={{ padding: '0.4rem 0.6rem' }} onClick={() => handleDelete(p.id)}>
                       <Trash2 size={14} />
                     </button>
