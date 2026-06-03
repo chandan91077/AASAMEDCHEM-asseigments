@@ -17,13 +17,13 @@ A full-stack B2B inventory and order management system for chemical raw material
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 14 (App Router) |
-| Database | Supabase PostgreSQL |
-| Auth | Supabase Auth |
-| Styling | Tailwind CSS (vanilla) |
-| Deployment | Vercel |
+| Layer      | Technology              |
+| ---------- | ----------------------- |
+| Framework  | Next.js 14 (App Router) |
+| Database   | Supabase PostgreSQL     |
+| Auth       | Supabase Auth           |
+| Styling    | Tailwind CSS (vanilla)  |
+| Deployment | Vercel                  |
 
 ---
 
@@ -47,50 +47,54 @@ Browser
 ## 📊 Database Schema
 
 ### `profiles`
+
 Extends Supabase `auth.users`. Auto-created via trigger on signup.
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | UUID | References auth.users |
-| email | TEXT | User email |
-| full_name | TEXT | Display name |
-| role | TEXT | `admin` / `seller` / `buyer` |
-| company_name | TEXT | Optional |
-| phone | TEXT | Optional |
+| Column       | Type | Notes                        |
+| ------------ | ---- | ---------------------------- |
+| id           | UUID | References auth.users        |
+| email        | TEXT | User email                   |
+| full_name    | TEXT | Display name                 |
+| role         | TEXT | `admin` / `seller` / `buyer` |
+| company_name | TEXT | Optional                     |
+| phone        | TEXT | Optional                     |
 
 ### `products`
-| Column | Type | Why this type? |
-|--------|------|----------------|
-| id | UUID | Globally unique, no collisions |
-| name | TEXT | Variable-length string, no limit |
-| sku | TEXT UNIQUE | Alphanumeric, unique constraint |
-| category | TEXT | Free-form category label |
-| description | TEXT | Long-form text |
-| base_unit | TEXT CHECK | Enum-like: `g`, `mL`, `unit` |
-| **base_price_paise** | **BIGINT** | Integer paise — avoids float errors; supports values up to ~₹92 quadrillion |
-| **stock_quantity** | **NUMERIC(20, 6)** | 20 significant digits, 6 decimal places — handles both very large (1 billion kg) and very small (0.000001 g) quantities |
-| is_active | BOOLEAN | Soft enable/disable |
+
+| Column               | Type               | Why this type?                                                                                                          |
+| -------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| id                   | UUID               | Globally unique, no collisions                                                                                          |
+| name                 | TEXT               | Variable-length string, no limit                                                                                        |
+| sku                  | TEXT UNIQUE        | Alphanumeric, unique constraint                                                                                         |
+| category             | TEXT               | Free-form category label                                                                                                |
+| description          | TEXT               | Long-form text                                                                                                          |
+| base_unit            | TEXT CHECK         | Enum-like: `g`, `mL`, `unit`                                                                                            |
+| **base_price_paise** | **BIGINT**         | Integer paise — avoids float errors; supports values up to ~₹92 quadrillion                                             |
+| **stock_quantity**   | **NUMERIC(20, 6)** | 20 significant digits, 6 decimal places — handles both very large (1 billion kg) and very small (0.000001 g) quantities |
+| is_active            | BOOLEAN            | Soft enable/disable                                                                                                     |
 
 ### `quotations`
-| Column | Type | Notes |
-|--------|------|-------|
-| id | UUID | PK |
-| user_id | UUID | References profiles |
-| status | TEXT | `pending` / `approved` / `rejected` / `fulfilled` |
-| **total_paise** | **BIGINT** | Integer paise, immune to floating-point drift |
-| notes | TEXT | Optional user notes |
+
+| Column          | Type       | Notes                                             |
+| --------------- | ---------- | ------------------------------------------------- |
+| id              | UUID       | PK                                                |
+| user_id         | UUID       | References profiles                               |
+| status          | TEXT       | `pending` / `approved` / `rejected` / `fulfilled` |
+| **total_paise** | **BIGINT** | Integer paise, immune to floating-point drift     |
+| notes           | TEXT       | Optional user notes                               |
 
 ### `quotation_items`
-| Column | Type | Notes |
-|--------|------|-------|
-| id | UUID | PK |
-| quotation_id | UUID | References quotations |
-| product_id | UUID | References products |
-| **ordered_qty_base** | **NUMERIC(20, 6)** | Qty in base unit — same precision as stock |
-| display_unit | TEXT | Unit chosen by user (g/kg/mL/L/unit) |
-| **display_qty** | **NUMERIC(20, 6)** | Qty as user entered — preserved for display |
-| **unit_price_paise** | **BIGINT** | Price snapshot per base unit in paise |
-| **line_total_paise** | **BIGINT** | Computed: `unit_price_paise × ordered_qty_base` |
+
+| Column               | Type               | Notes                                           |
+| -------------------- | ------------------ | ----------------------------------------------- |
+| id                   | UUID               | PK                                              |
+| quotation_id         | UUID               | References quotations                           |
+| product_id           | UUID               | References products                             |
+| **ordered_qty_base** | **NUMERIC(20, 6)** | Qty in base unit — same precision as stock      |
+| display_unit         | TEXT               | Unit chosen by user (g/kg/mL/L/unit)            |
+| **display_qty**      | **NUMERIC(20, 6)** | Qty as user entered — preserved for display     |
+| **unit_price_paise** | **BIGINT**         | Price snapshot per base unit in paise           |
+| **line_total_paise** | **BIGINT**         | Computed: `unit_price_paise × ordered_qty_base` |
 
 ---
 
@@ -98,13 +102,13 @@ Extends Supabase `auth.users`. Auto-created via trigger on signup.
 
 The system supports all 5 required units across two storage dimensions:
 
-| Display Unit | Full Name | Base Unit | Conversion Factor |
-|-------------|-----------|-----------|-------------------|
-| **g** | grams | g | × 1 |
-| **kg** | kilograms | g | × 1,000 |
-| **mL** | milliliters | mL | × 1 |
-| **L** | liters | mL | × 1,000 |
-| **unit** | items/count | unit | × 1 |
+| Display Unit | Full Name   | Base Unit | Conversion Factor |
+| ------------ | ----------- | --------- | ----------------- |
+| **g**        | grams       | g         | × 1               |
+| **kg**       | kilograms   | g         | × 1,000           |
+| **mL**       | milliliters | mL        | × 1               |
+| **L**        | liters      | mL        | × 1,000           |
+| **unit**     | items/count | unit      | × 1               |
 
 Users can enter quantities in **any of these 5 units**. The system internally converts and stores in the base unit.
 
@@ -113,12 +117,14 @@ Users can enter quantities in **any of these 5 units**. The system internally co
 ## 💰 Price Storage Strategy
 
 ### Why BIGINT + Paise?
+
 - Prices stored as **integers in Indian Paise** (1 INR = 100 paise)
 - **No floating-point errors** — `FLOAT` / `DOUBLE` cannot represent 0.1 exactly in binary. With BIGINT, `₹1.50` is stored as `150` — exact integer arithmetic.
 - `BIGINT` supports values up to **9,223,372,036,854,775,807 paise** = ~₹92 quadrillion — sufficient for any bulk chemical trade
 - Display always converts: `paise ÷ 100 → INR` with `₹` symbol via `Intl.NumberFormat('en-IN')`
 
 ### Why NUMERIC(20, 6) for quantities?
+
 - `NUMERIC` is an **exact decimal type** in PostgreSQL (unlike FLOAT which is approximate)
 - **20 significant digits** → handles stock in billions of kg/L (e.g., `99,999,999,999.999999`)
 - **6 decimal places** → precision down to 0.000001 units (micrograms, microliters)
@@ -129,15 +135,17 @@ Users can enter quantities in **any of these 5 units**. The system internally co
 ## 📐 Unit Storage & Conversion Strategy
 
 ### Base Units
+
 All quantities stored in the **smallest base unit**:
 
-| Dimension | Base Unit | Display Units | Conversion |
-|-----------|-----------|---------------|------------|
-| Weight | grams (g) | g, kg | 1 kg = 1000 g |
-| Volume | milliliters (mL) | mL, L | 1 L = 1000 mL |
-| Count | units | unit | 1:1 |
+| Dimension | Base Unit        | Display Units | Conversion    |
+| --------- | ---------------- | ------------- | ------------- |
+| Weight    | grams (g)        | g, kg         | 1 kg = 1000 g |
+| Volume    | milliliters (mL) | mL, L         | 1 L = 1000 mL |
+| Count     | units            | unit          | 1:1           |
 
 ### End-to-End Conversion Example
+
 ```
 User enters: 2.5 kg at ₹50.0000/kg
 
@@ -155,19 +163,21 @@ Step 4 — Display:
 ```
 
 ### Where Conversions Happen in Code
-| Function | Location | Purpose |
-|----------|----------|---------|
-| `toBaseUnit(qty, unit)` | `src/lib/units.ts` | Before saving to DB |
-| `fromBaseUnit(qty, unit)` | `src/lib/units.ts` | Before displaying |
-| `calculateLineTotalPaise(price, qty)` | `src/lib/units.ts` | During cart calculation |
-| `formatINR(paise)` | `src/lib/units.ts` | Any price display in UI |
-| `inrToPaise(inr)` | `src/lib/units.ts` | When admin enters price in ₹ |
+
+| Function                              | Location           | Purpose                      |
+| ------------------------------------- | ------------------ | ---------------------------- |
+| `toBaseUnit(qty, unit)`               | `src/lib/units.ts` | Before saving to DB          |
+| `fromBaseUnit(qty, unit)`             | `src/lib/units.ts` | Before displaying            |
+| `calculateLineTotalPaise(price, qty)` | `src/lib/units.ts` | During cart calculation      |
+| `formatINR(paise)`                    | `src/lib/units.ts` | Any price display in UI      |
+| `inrToPaise(inr)`                     | `src/lib/units.ts` | When admin enters price in ₹ |
 
 ---
 
 ## 🔧 Local Setup
 
 ### 1. Clone and install
+
 ```bash
 git clone <repo-url>
 cd samedchem-app
@@ -175,27 +185,34 @@ npm install
 ```
 
 ### 2. Set up Supabase
+
 1. Go to [supabase.com](https://supabase.com) and create a project
 2. Run `supabase/schema.sql` in the Supabase SQL Editor
 3. Copy your project URL and anon key
 
 ### 3. Environment variables
+
 Create `.env.local`:
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_anon_key
 ```
 
 ### 4. Create demo users
+
 In Supabase **Authentication → Users**, create:
+
 - `admin@samedchem.com` / `Admin@123` → then update `profiles.role = 'admin'` in Table Editor
 - `seller@samedchem.com` / `Seller@123`
 - `buyer@samedchem.com` / `Buyer@123`
 
 ### 5. Run locally
+
 ```bash
 npm run dev
 ```
+
 Visit [http://localhost:3000](http://localhost:3000)
 
 ---
@@ -211,15 +228,36 @@ Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
+## 🔁 CI / CD
+
+This repository includes GitHub Actions workflows that run lint/build and (optionally) deploy to Vercel.
+
+- CI workflow: `/.github/workflows/ci.yml` — runs on pushes and PRs to `main` and `develop`. It installs dependencies, runs `npm run lint`, and builds the Next.js app in the `samedchem-app` folder.
+- Deploy workflow: `/.github/workflows/deploy.yml` — runs on pushes to `main` and uses the Vercel CLI to deploy.
+
+Setup for automatic deploys via GitHub Actions:
+
+1. In your repository Settings → Secrets, add the following secrets:
+
+- `VERCEL_TOKEN` — a personal token from Vercel
+- `VERCEL_ORG_ID` — your Vercel organization ID
+- `VERCEL_PROJECT_ID` — your Vercel project ID
+
+2. Push to `main` to trigger the deploy workflow, or open a PR to trigger CI.
+
+Note: If you prefer Vercel's Git-based deployments, you can skip the deploy workflow and let Vercel handle builds automatically when you connect the GitHub repo.
+
 ## 🎯 Features
 
 ### 🔑 Admin
+
 - Dashboard with stats (products, users, revenue, pending quotations)
 - Full product CRUD with unit configuration and category
 - User management with inline role change (admin/seller/buyer)
 - Quotations viewer with status management, status history, and expandable line items showing unit conversions
 
 ### 🏪 Seller / 🛒 Buyer
+
 - Product catalog with text search and category filters
 - **Real-time price calculator** — price updates instantly as you change quantity or unit
 - Shopping cart with unit conversion display (shows both display unit and base unit)
