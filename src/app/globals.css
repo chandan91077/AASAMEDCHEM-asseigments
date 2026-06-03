@@ -28,15 +28,15 @@
 }
 
 :root {
-  --background: #0a0f1e;
-  --foreground: #e8edf8;
-  --card: #0f1629;
-  --card-foreground: #e8edf8;
-  --border: #1e2d4d;
-  --input: #141d35;
-  --ring: #0e90e2;
-  --muted: #1a2540;
-  --muted-foreground: #8899bb;
+  --background: #f7fafc; /* light page background */
+  --foreground: #0f1724; /* primary text */
+  --card: #ffffff; /* card backgrounds */
+  --card-foreground: #0f1724;
+  --border: #e6eaf0; /* subtle borders */
+  --input: #ffffff; /* input background */
+  --ring: #0e90e2; /* keep brand accent */
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
   --radius: 0.75rem;
 }
 
@@ -61,23 +61,23 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0a0f1e; }
-::-webkit-scrollbar-thumb { background: #1e2d4d; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #0e90e2; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
 /* Glass morphism card */
 .glass-card {
-  background: rgba(15, 22, 41, 0.8);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(30, 45, 77, 0.5);
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--border);
   border-radius: calc(var(--radius) + 0.25rem);
-  box-shadow: 0 6px 20px rgba(2,8,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  box-shadow: 0 6px 20px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #38aaf6, #34d399);
+  background: linear-gradient(135deg, #0e90e2, #0b728f);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
